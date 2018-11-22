@@ -1,5 +1,4 @@
 from bsddb3 import db
-import bsddb3
 import os
 import sys
 from subprocess import call
@@ -70,9 +69,11 @@ with open('sortedPrices.txt') as pricesFile:
 
 pricesFile.close()
 
+os.system("db_load -T -f splitAds.txt -t hash ad.idx")
+os.system("db_load -T -f splitPdates.txt -t btree da.idx")
+os.system("db_load -T -f splitPrices.txt -t btree pr.idx")
+os.system("db_load -T -f splitTerms.txt -t btree te.idx")
+
+
 #clean up files
 os.system("rm -rf splitTerms.txt splitPdates.txt splitAds.txt splitPrices.txt")
-
-database = db.DB()
-database.open("ad.idx")
-print(database.get(b'1003735660'))
