@@ -288,8 +288,7 @@ def termQuery(queryString):
     # queryString is the term the user wants to search
     # TODO: format the string so you can conduct queries on it
     queryString = queryString.lower()
-    # Setting byte literals https://stackoverflow.com/questions/19511440/add-b-prefix-to-python-variable
-    queryString = bytes(queryString, encoding='utf-8')
+
     # we need the term index and the ad index
     termIndex = db.DB()
     termIndex.open("te.idx")
@@ -298,26 +297,51 @@ def termQuery(queryString):
     adIndex.open("ad.idx")
     adCursor = adIndex.cursor()
 
-    # We first need to get the ad id from the term
-
-    termCursor.set(queryString)
-
-    try:
-        termCursor.get(queryString, db.DB_CURRENT)
-    except:
-        print("No term found") # checks to see if term was found
-        exit()
-
-    # At this point the cursor is set correctly and we need to iterate through
     # all values that match the desired key
     adIds = []
     fullRecords = []
-    while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
-        # get the values of the keys and append to list of values
-        retrievedValue = termCursor.get(queryString, db.DB_CURRENT)[1]
-        retrievedValue = retrievedValue.decode('utf-8')
-        adIds.append(retrievedValue)
-        termCursor.next()
+
+    if queryString[-1] == '%':
+        # Need to do partial matching
+        queryString = queryString.replace("%", "")  # get rid of %
+        stringLength = len(queryString)
+
+        queryString = bytes(queryString, encoding='utf-8')
+        termCursor.set_range(queryString)
+
+
+        try:
+            termCursor.get(queryString, db.DB_CURRENT)
+
+        except:
+            print("No term found")  # checks to see if term was found
+            exit()
+
+        while termCursor.get(queryString, db.DB_CURRENT)[0].decode('utf-8')[:stringLength] == queryString.decode('utf-8'):
+
+            adIds.append(termCursor.get(queryString, db.DB_CURRENT)[1].decode('utf-8'))
+            termCursor.next()
+
+    else:
+        # We first need to get the ad id from the term
+        # The following executes if there is no partial matching
+        # Setting byte literals https://stackoverflow.com/questions/19511440/add-b-prefix-to-python-variable
+        queryString = bytes(queryString, encoding='utf-8')
+        termCursor.set(queryString)
+
+        try:
+            termCursor.get(queryString, db.DB_CURRENT)
+        except:
+            print("No term found") # checks to see if term was found
+            exit()
+
+        # At this point the cursor is set correctly and we need to iterate through
+        while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
+            # get the values of the keys and append to list of values
+            retrievedValue = termCursor.get(queryString, db.DB_CURRENT)[1]
+            retrievedValue = retrievedValue.decode('utf-8')
+            adIds.append(retrievedValue)
+            termCursor.next()
 
     #Now that we have the adIds we can get their titles from ad.idx
     for adId in adIds:
@@ -434,8 +458,9 @@ def main():
 
     # Once we get to this points, all thats left are the terms that the user wants to search for
     # since all the other query strings will have been removed from the userInput string
-    termList = re.findall(r'\w+\s*', userInput)
+    termList = re.findall(r'\s*\w+%?\s*', userInput)
     termList = list(filter(None, termList))
+    print(termList)
     for term in termList:
         term = term.replace(" ", "")
         result = termQuery(term)
