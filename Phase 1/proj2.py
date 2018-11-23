@@ -1,4 +1,5 @@
 import re
+from bsddb3 import db
 
 def dateQuery(queryString):
     #query string is of the format date<=yyyy/mm/dd or with an equivalent operator
@@ -24,6 +25,43 @@ def categoryQuery(queryString):
 def termQuery(queryString):
     # queryString is the term the user wants to search
     # TODO: format the string so you can conduct queries on it
+    queryString = queryString.lower()
+    # Setting byte literals https://stackoverflow.com/questions/19511440/add-b-prefix-to-python-variable
+    queryString = bytes(queryString, encoding='utf-8')
+    # we need the term index and the ad index
+    termIndex = db.DB()
+    termIndex.open("te.idx")
+    termCursor = termIndex.cursor()
+    adIndex = db.DB()
+    adIndex.open("ad.idx")
+    adIndex.cursor()
+
+    # We first need to get the ad id from the term
+
+    termCursor.set(queryString)
+
+    try:
+        print(termCursor.get(queryString, db.DB_CURRENT))
+    except:
+        print("No term found") # checks to see if term was found
+        return
+
+    # At this point the cursor is set correctly and we need to iterate through
+    # all values that match the desired key
+    adIds = []
+    while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
+        # get the values of the keys and append to list of values
+        retrievedValue = termCursor.get(queryString, db.DB_CURRENT)[1]
+        retrievedValue = retrievedValue.decode('utf-8')
+        adIds.append(retrievedValue)
+        termCursor.next()
+
+    #Now that we have the adIds we can get their titles from ad.idx
+    for adId in adIds:
+        # we are guaranteed to find the ads in ad.idx
+
+
+
     return
 
 def main():
@@ -42,7 +80,7 @@ def main():
         result = dateQuery(date)
         resultList.append(result)
 
-    print(dateList)
+
     # Search for all Price Queries
     priceList = re.findall(r'price\s*(?:<=|>=|>|<)\s*[0-9]+', userInput)
     for price in priceList:
@@ -52,7 +90,6 @@ def main():
         result = priceQuery(price)
         resultList.append(result)
 
-    print(priceList)
 
     # Search for all location Queries
     locationList = re.findall(r'location\s*=\s*[0-9A-Za-z]+', userInput)
@@ -63,10 +100,10 @@ def main():
         result = locationQuery(location)
         resultList.append(result)
 
-    print(locationList)
+
 
     # Search for all category Queries
-    categoryList = re.findall(r'cat\s*=\s*[0-9A-Za-z%]+', userInput)
+    categoryList = re.findall(r'cat\s*=\s*[0-9A-Za-z%\-]+', userInput)
     for category in categoryList:
         # first remove the price string from the userInput
         userInput = userInput.replace(category, "")
@@ -74,7 +111,7 @@ def main():
         result = categoryQuery(category)
         resultList.append(result)
 
-    print(categoryList)
+
 
     # Once we get to this points, all thats left are the terms that the user wants to search for
     # since all the other query strings will have been removed from the userInput string
@@ -85,7 +122,11 @@ def main():
         result = termQuery(term)
         resultList.append(result)
 
-    print(termList)
+
+    termIndex = db.DB()
+    termIndex.open("te.idx")
+    termCursor = termIndex.cursor()
+
     return
 
 

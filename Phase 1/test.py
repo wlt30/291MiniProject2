@@ -76,4 +76,4 @@ os.system("db_load -T -f splitTerms.txt -t btree te.idx")
 
 
 #clean up files
-os.system("rm -rf splitTerms.txt splitPdates.txt splitAds.txt splitPrices.txt")
+#os.system("rm -rf splitTerms.txt splitPdates.txt splitAds.txt splitPrices.txt")
