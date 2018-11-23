@@ -1,11 +1,11 @@
 from bsddb3 import db
 import os
-import sys
+import sysfunc
 import time
 from subprocess import call
 
 def phase2():
-
+    
     os.system('touch splitTerms.txt')
     os.system('touch splitAds.txt')
     os.system('touch splitPdates.txt')
