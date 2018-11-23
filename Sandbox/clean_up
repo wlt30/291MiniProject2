@@ -1,0 +1,2 @@
+#!/bin/bash
+rm -f splitTerms.txt splitPrices.txt splitPdates.txt splitAds.txt terms.txt ads.txt pdates.txt prices.txt te.idx pr.idx da.idx ad.idx sortedTerms.txt sortedPrices.txt sortedPdate.txt sortedAds.txt
