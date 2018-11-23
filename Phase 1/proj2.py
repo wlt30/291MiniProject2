@@ -1,6 +1,9 @@
 import re
 from bsddb3 import db
 
+# global variable to determine if user wants to display the short form or not
+SHORT_INPUT = True # set to true by default
+
 def dateQuery(queryString):
     #query string is of the format date<=yyyy/mm/dd or with an equivalent operator
     #We need to split this string in order to conduct the query TODO
@@ -8,8 +11,8 @@ def dateQuery(queryString):
     return 0
 
 def priceQuery(queryString):
-    #queryString is of the format price<=[/number]+
-    #TODO: format the string so you can conduct queries on it
+    # queryString is of the format price<=[/number]+
+    # TODO: format the string so you can conduct queries on it
     return 0
 
 def locationQuery(queryString):
@@ -34,21 +37,22 @@ def termQuery(queryString):
     termCursor = termIndex.cursor()
     adIndex = db.DB()
     adIndex.open("ad.idx")
-    adIndex.cursor()
+    adCursor = adIndex.cursor()
 
     # We first need to get the ad id from the term
 
     termCursor.set(queryString)
 
     try:
-        print(termCursor.get(queryString, db.DB_CURRENT))
+        termCursor.get(queryString, db.DB_CURRENT)
     except:
         print("No term found") # checks to see if term was found
-        return
+        exit()
 
     # At this point the cursor is set correctly and we need to iterate through
     # all values that match the desired key
     adIds = []
+    fullRecords = []
     while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
         # get the values of the keys and append to list of values
         retrievedValue = termCursor.get(queryString, db.DB_CURRENT)[1]
@@ -59,26 +63,61 @@ def termQuery(queryString):
     #Now that we have the adIds we can get their titles from ad.idx
     for adId in adIds:
         # we are guaranteed to find the ads in ad.idx
+        adId = bytes(adId, encoding='utf-8')
+        adCursor.set(adId)
+        record = adCursor.get(adId, db.DB_CURRENT)
 
+        # now that we have the record we can return the ID as well as the ad record
+        fullRecords.append([adId.decode('utf-8'), record[1].decode('utf-8')])
 
+    return fullRecords
 
-    return
+def printRecord(record):
+    if SHORT_INPUT == True:
+        # First we need to extract the title from the the record
+        # I will use regular expressions for this
+        title = re.findall(r'<ti>.*</ti>', record[1])[0]
+        title = title.replace('<ti>', "")
+        title = title.replace('</ti>', "")
+
+        print('adID: {}'.format(record[0]))
+        print('Title: {}\n'.format(title))
+        return
+
+    else:
+        print("adID: {}".format(record[0]))
+        print("Record: {}\n".format(record[1]))
+        return
 
 def main():
     # 'Master' list that will contain all the returned results from all queries
+    global SHORT_INPUT
     resultList = []
 
     userInput = input("Type in Query: ")
-    print(userInput)
+    userInput = userInput.lower()
+
+    if userInput == "exit":
+        exit(1)
+
+    elif userInput == "output=brief":
+        print("Short Display Enabled")
+        SHORT_INPUT = True
+        return
+
+    elif userInput == "output=full":
+        print("Full Display Enabled")
+        SHORT_INPUT = False
+        return
 
     # Search for all dateQueries
     dateList = re.findall(r'.*date\s*(?:<=|>=|>|<)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]', userInput)
     for date in dateList:
-        #first remove the date string from the userinput
+        # first remove the date string from the userinput
         userInput = userInput.replace(date, "")
         date = date.replace(" ","")
         result = dateQuery(date)
-        resultList.append(result)
+        resultList = resultList + result
 
 
     # Search for all Price Queries
@@ -88,7 +127,7 @@ def main():
         userInput = userInput.replace(price, "")
         price = price.replace(" ", "")
         result = priceQuery(price)
-        resultList.append(result)
+        resultList = resultList + result
 
 
     # Search for all location Queries
@@ -98,7 +137,7 @@ def main():
         userInput = userInput.replace(location, "")
         location = location.replace(" ", "")
         result = locationQuery(location)
-        resultList.append(result)
+        resultList = resultList + result
 
 
 
@@ -109,7 +148,7 @@ def main():
         userInput = userInput.replace(category, "")
         category = category.replace(" ", "")
         result = categoryQuery(category)
-        resultList.append(result)
+        resultList = resulitList + result
 
 
 
@@ -120,12 +159,12 @@ def main():
     for term in termList:
         term = term.replace(" ", "")
         result = termQuery(term)
-        resultList.append(result)
+        resultList = resultList + result
 
 
-    termIndex = db.DB()
-    termIndex.open("te.idx")
-    termCursor = termIndex.cursor()
+    # at this point all the results should be loaded in the result list and we can display them
+    for record in resultList:
+        printRecord(record)
 
     return
 
@@ -133,5 +172,5 @@ def main():
 
 
 
-
-main()
+while(1):
+    main()
