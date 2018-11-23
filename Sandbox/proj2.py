@@ -3,6 +3,7 @@ import os
 import platform
 import time
 import phase1
+import phase2
 import re
 from bsddb3 import db
 import xml.etree.ElementTree as et
@@ -29,13 +30,13 @@ def main():
         os.system(cls)
         sys.exit()
     
-    os.system("sort -u ads.txt > ads.txt")
+    os.system("sort -u ads.txt > sortedAds.txt")
     print("Sorted ads.txt")
-    os.system("sort -u prices.txt > prices.txt")
+    os.system("sort -u prices.txt > sortedPrices.txt")
     print("Sorted prices.txt")
-    os.system("sort -u pdate.txt > pdate.txt")
+    os.system("sort -u pdate.txt > sortedPdate.txt")
     print("Sorted pdate.txt")
-    os.system("sort -u terms.txt > terms.txt")
+    os.system("sort -u terms.txt > sortedTerms.txt")
     print("Sorted terms.txt")
     
 
