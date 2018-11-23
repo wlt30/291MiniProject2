@@ -410,8 +410,8 @@ def main():
         else:
             resultList = list(set(resultList) - (set(resultList) - set(result)))
 
-
-    if not resultList:
+    # if the category query was not handled by price or date query then we execute the worst possible scenario
+    if not dateList and not priceList:
         if categoryList:
             result = categoryQuery(categoryList[0])
             resultList = resultList + result;
