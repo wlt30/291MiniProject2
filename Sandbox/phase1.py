@@ -78,7 +78,7 @@ def phase1(input_file):
                     break
                 else:
                     price = element.text
-                    txt_price = ("%s:%s:%s:%s\n"%(price,aid,category,location))
+                    txt_price = ("%s:%s,%s,%s\n"%(price,aid,category,location))
                     price_txt.append(txt_price)
                     txt_price=""
                     
