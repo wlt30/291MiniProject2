@@ -240,12 +240,12 @@ def priceQuery(queryString, categoryQueries, locationQueries):
 def locationQuery(queryString):
     # queryString is of the format location=[A-Za-z0-9]+
     # TODO: format the string so you can conduct queries on it
-    return 0
+    return []
 
 def categoryQuery(queryString):
     # queryString is of the format category=[A-Za-z0-9]+
     # TODO: format the string so you can conduct queries on it
-    return
+    return []
 
 def termQuery(queryString):
     # queryString is the term the user wants to search
@@ -410,8 +410,23 @@ def main():
         else:
             resultList = list(set(resultList) - (set(resultList) - set(result)))
 
+
+    if not resultList:
+        if categoryList:
+            result = categoryQuery(categoryList[0])
+            resultList = resultList + result;
+
+        if locationList:
+            result = locationQuery(locationList[0])
+            if not resultList:
+                resultList = resultList + result;
+
+            else: # if the category query returned results we need to take the intersection
+                resultList = list(set(resultList)- (set(resultList) - set(result)))
+
     if not resultList:
         print("No matches found")
+
 
     # at this point all the results should be loaded in the result list and we can display them
     for record in resultList:
