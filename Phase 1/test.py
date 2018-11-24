@@ -7,7 +7,7 @@ from subprocess import call
 os.system('sort -u 10-terms.txt > sortedTerms.txt')
 os.system('sort -u 10-ads.txt > sortedAds.txt')
 os.system('sort -u 10-pdates.txt > sortedPdates.txt')
-os.system('sort -u 10-prices.txt > sortedPrices.txt')
+os.system('sort -u -n 10-prices.txt > sortedPrices.txt')
 
 os.system('touch splitTerms.txt')
 os.system('touch splitAds.txt')
@@ -69,10 +69,10 @@ with open('sortedPrices.txt') as pricesFile:
 
 pricesFile.close()
 
-os.system("db_load -T -f splitAds.txt -t hash ad.idx")
-os.system("db_load -T -f splitPdates.txt -t btree da.idx")
-os.system("db_load -T -f splitPrices.txt -t btree pr.idx")
-os.system("db_load -T -f splitTerms.txt -t btree te.idx")
+os.system("db_load -T -c duplicates=1 -f splitAds.txt -t hash ad.idx")
+os.system("db_load -T -c duplicates=1 -f splitPdates.txt -t btree da.idx")
+os.system("db_load -T -c duplicates=1 -f splitPrices.txt -t btree pr.idx")
+os.system("db_load -T -c duplicates=1 -f splitTerms.txt -t btree te.idx")
 
 
 #clean up files
