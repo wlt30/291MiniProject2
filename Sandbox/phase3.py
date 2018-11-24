@@ -408,134 +408,129 @@ def printRecord(record):
         print("Record: {}\n".format(record[1]))
         return
 
-def main():
-    # 'Master' list that will contain all the returned results from all queries
-    global SHORT_INPUT
-    resultList = []
+def phase3():
+    while(1):
+        # 'Master' list that will contain all the returned results from all queries
+        global SHORT_INPUT
+        resultList = []
 
-    userInput = input("Type in Query: ")
-    userInput = userInput.lower()
+        userInput = input("Type in Query: ")
+        userInput = userInput.lower()
 
-    if userInput == "exit":
-        exit(1)
+        if userInput == "exit":
+            exit(1)
 
-    elif userInput == "output=brief":
-        print("Short Display Enabled")
-        SHORT_INPUT = True
-        return
+        elif userInput == "output=brief":
+            print("Short Display Enabled")
+            SHORT_INPUT = True
+            return
 
-    elif userInput == "output=full":
-        print("Full Display Enabled")
-        SHORT_INPUT = False
-        return
+        elif userInput == "output=full":
+            print("Full Display Enabled")
+            SHORT_INPUT = False
+            return
 
-    # Search for all category Queries
-    categoryList = re.findall(r'cat\s*=\s*[0-9A-Za-z%\-]+', userInput)
-    if len(categoryList) > 1:
-        # cannot have more than one category
-        print("No Matches")
-        return
+        # Search for all category Queries
+        categoryList = re.findall(r'cat\s*=\s*[0-9A-Za-z%\-]+', userInput)
+        if len(categoryList) > 1:
+            # cannot have more than one category
+            print("No Matches")
+            return
 
-    for category in categoryList:
-        # first remove the price string from the userInput
-        userInput = userInput.replace(category, "")
-        category = category.replace(" ", "")
-        # We do not execute the category query yet since we want to see
-        # if we can execute it simultaneously with price or date
-        #
-        # result = categoryQuery(category)
-        # resultList = resulitList + result
-
-
-
-    # Search for all location Queries
-    locationList = re.findall(r'location\s*=\s*[0-9A-Za-z\-]+', userInput)
-
-    if len(locationList) > 1:
-        # cannot have more than one location
-        print("No Matches")
-        return
-
-    for location in locationList:
-        # first remove the price string from the userInput
-        userInput = userInput.replace(location, "")
-        location = location.replace(" ", "")
-        # We do not execute the location query yet since we want to see
-        # if we can execute it simultaneously with price or date
-        #
-        # result = locationQuery(category)
-        # resultList = resultList + result
-
-    # Search for all dateQueries
-    dateList = re.findall(r'.*date\s*(?:<=|>=|>|<)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]', userInput)
-    for date in dateList:
-        # first remove the date string from the userinput
-        userInput = userInput.replace(date, "")
-        date = date.replace(" ","")
-        result = dateQuery(date)
-        resultList = resultList + result
+        for category in categoryList:
+            # first remove the price string from the userInput
+            userInput = userInput.replace(category, "")
+            category = category.replace(" ", "")
+            # We do not execute the category query yet since we want to see
+            # if we can execute it simultaneously with price or date
+            #
+            # result = categoryQuery(category)
+            # resultList = resulitList + result
 
 
-    # Search for all Price Queries
-    priceList = re.findall(r'price\s*(?:<=|>=|>|<)\s*[0-9]+', userInput)
-    for price in priceList:
-        # first remove the price string from the userInput
-        userInput = userInput.replace(price, "")
-        price = price.replace(" ", "")
-        result = priceQuery(price, categoryList, locationList)
-        # If there are already results in the result list, then take the intersection. Otherwise the just the result
-        # to the result list
-        if not resultList:
+
+        # Search for all location Queries
+        locationList = re.findall(r'location\s*=\s*[0-9A-Za-z\-]+', userInput)
+
+        if len(locationList) > 1:
+            # cannot have more than one location
+            print("No Matches")
+            return
+
+        for location in locationList:
+            # first remove the price string from the userInput
+            userInput = userInput.replace(location, "")
+            location = location.replace(" ", "")
+            # We do not execute the location query yet since we want to see
+            # if we can execute it simultaneously with price or date
+            #
+            # result = locationQuery(category)
+            # resultList = resultList + result
+
+        # Search for all dateQueries
+        dateList = re.findall(r'.*date\s*(?:<=|>=|>|<)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]', userInput)
+        for date in dateList:
+            # first remove the date string from the userinput
+            userInput = userInput.replace(date, "")
+            date = date.replace(" ","")
+            result = dateQuery(date)
             resultList = resultList + result
 
-        else:
-            resultList = list(set(resultList) - (set(resultList) - set(result)))
 
-
-    # Once we get to this points, all thats left are the terms that the user wants to search for
-    # since all the other query strings will have been removed from the userInput string
-    termList = re.findall(r'\s*\w+%?\s*', userInput)
-    termList = list(filter(None, termList))
-    print(termList)
-    for term in termList:
-        term = term.replace(" ", "")
-        result = termQuery(term)
-        # If there are already results in the result list, then take the intersection. Otherwise the just the result
-        # to the result list
-        if not resultList:
-            resultList = resultList + result
-
-        else:
-            resultList = list(set(resultList) - (set(resultList) - set(result)))
-
-    # if the category query was not handled by price or date query then we execute the worst possible scenario
-    if not dateList and not priceList:
-        if categoryList:
-            result = categoryQuery(categoryList[0])
-            resultList = resultList + result;
-
-        if locationList:
-            location = locationList[0].replace(" ", "")
-            result = locationQuery(location)
+        # Search for all Price Queries
+        priceList = re.findall(r'price\s*(?:<=|>=|>|<)\s*[0-9]+', userInput)
+        for price in priceList:
+            # first remove the price string from the userInput
+            userInput = userInput.replace(price, "")
+            price = price.replace(" ", "")
+            result = priceQuery(price, categoryList, locationList)
+            # If there are already results in the result list, then take the intersection. Otherwise the just the result
+            # to the result list
             if not resultList:
+                resultList = resultList + result
+
+            else:
+                resultList = list(set(resultList) - (set(resultList) - set(result)))
+
+
+        # Once we get to this points, all thats left are the terms that the user wants to search for
+        # since all the other query strings will have been removed from the userInput string
+        termList = re.findall(r'\s*\w+%?\s*', userInput)
+        termList = list(filter(None, termList))
+        print(termList)
+        for term in termList:
+            term = term.replace(" ", "")
+            result = termQuery(term)
+            # If there are already results in the result list, then take the intersection. Otherwise the just the result
+            # to the result list
+            if not resultList:
+                resultList = resultList + result
+
+            else:
+                resultList = list(set(resultList) - (set(resultList) - set(result)))
+
+        # if the category query was not handled by price or date query then we execute the worst possible scenario
+        if not dateList and not priceList:
+            if categoryList:
+                result = categoryQuery(categoryList[0])
                 resultList = resultList + result;
 
-            else: # if the category query returned results we need to take the intersection
-                resultList = list(set(resultList)- (set(resultList) - set(result)))
+            if locationList:
+                location = locationList[0].replace(" ", "")
+                result = locationQuery(location)
+                if not resultList:
+                    resultList = resultList + result;
 
-    if not resultList:
-        print("No matches found")
+                else: # if the category query returned results we need to take the intersection
+                    resultList = list(set(resultList)- (set(resultList) - set(result)))
 
-
-    # at this point all the results should be loaded in the result list and we can display them
-    for record in resultList:
-        printRecord(record)
-
-    return
-
+        if not resultList:
+            print("No matches found")
 
 
+        # at this point all the results should be loaded in the result list and we can display them
+        for record in resultList:
+            printRecord(record)
 
-
-while(1):
-    main()
+        return
+()
