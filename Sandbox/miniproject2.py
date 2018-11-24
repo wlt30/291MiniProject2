@@ -4,6 +4,7 @@ import platform
 import time
 import phase1
 import phase2
+import phase3
 import sysfunc
 import re
 from bsddb3 import db
@@ -49,4 +50,6 @@ def main():
         sys.exit()
 
     print("Entering Phase 3")
+    while(1):
+        phase3.phase3()
 main()
