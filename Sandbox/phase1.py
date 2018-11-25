@@ -31,7 +31,7 @@ def phase1(input_file):
 
     test=[]
 
-    
+
     try:
         file = open(input_file, "r")
     except:
@@ -39,7 +39,7 @@ def phase1(input_file):
         time.sleep(1)
         os.system(cls)
         sys.exit()
-    
+
 
     for line in file:
 
@@ -132,7 +132,7 @@ def phase1(input_file):
             if date == "":
                 pass
             else:
-                txt_pdate +=("%s:%s:%s:%s\n"%(date,aid,cat,loc))
+                txt_pdate +=("%s:%s,%s,%s\n"%(date,aid,cat,loc))
                 date_list.append(txt_pdate)
                 txt_pdate =""
 
@@ -140,7 +140,7 @@ def phase1(input_file):
             if price == "":
                 pass
             else:
-                txt_price += ("%s:%s:%s:%s\n"%(price,aid,cat,loc))
+                txt_price += ("%s:%s,%s,%s\n"%(price,aid,cat,loc))
                 txt_price = txt_price.rjust(len(txt_price)+12 -(len(price)))
                 price_list.append(txt_price)
                 txt_price=""
@@ -172,5 +172,5 @@ def phase1(input_file):
     file_ads.close()
 
     print("Completed Phase 1\nCreated ads.txt, prices.txt, pdate.txt,terms.txt\n\n")
-    
+
 ()
