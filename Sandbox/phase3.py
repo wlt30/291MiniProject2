@@ -129,7 +129,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
         while True:
             dateCursor.next()
-            if dateCuror.get(date,db.DB_CURRENT)[0] == date:
+            if dateCursor.get(date,db.DB_CURRENT)[0] == date:
                 continue
             else:
                 dateCursor.prev()
