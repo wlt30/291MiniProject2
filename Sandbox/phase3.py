@@ -234,7 +234,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             if returnedLocation.lower() == category.decode('utf-8'):
                 adIds.append(returnedValue.split(',')[0])
 
-            iter = priceCursor.next()
+            iter = dateCursor.next()
 
         # while iter:
         #     if iter[0] == date:
