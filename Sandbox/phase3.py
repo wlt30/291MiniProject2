@@ -80,13 +80,16 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
         while True:
             if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+                test = dateCursor.get(date, db.DB_CURRENT)[0]
+                print(test)
                 # if the set index is exactly the date specified then move to next one if possible
                 if dateCursor.get(date, db.DB_NEXT) == None:
                     return []
 
                 if dateCursor.get(date, db.DB_CURRENT)[0] == date:
                     continue
-                if dateCursor.get(date,db.DB_CURRENT)[0] >date:
+
+                if dateCursor.get(date,db.DB_CURRENT)[0] > date:
                     break
 
 
