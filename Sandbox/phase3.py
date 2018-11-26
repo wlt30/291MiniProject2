@@ -391,8 +391,8 @@ def priceQuery(queryString, categoryQueries, locationQueries):
                 break
 
     elif operator == '<=':
-        if priceCursor.get(price, db.DB_CURRENT)[0] != price:  # need to got to previous index due to how the set_range function works
-            priceCursor.prev()                                  # set to previous if set key is initially larger than price
+        # if priceCursor.get(price, db.DB_CURRENT)[0] != price:  # need to got to previous index due to how the set_range function works
+        #     priceCursor.prev()                                  # set to previous if set key is initially larger than price
 
         while priceCursor.get(price, db.DB_CURRENT)[0] <= price:
 
