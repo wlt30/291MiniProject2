@@ -700,8 +700,17 @@ def phase3():
             # first remove the date string from the userinput
             userInput = userInput.replace(date, "")
             date = date.replace(" ","")
-            result = dateQuery(date)
+            result = dateQuery(date, categoryList, locationList)
             resultList = resultList + result
+
+            # If there are already results in the result list, then take the intersection. Otherwise the just the result
+            # to the result list
+            if not resultList:
+                resultList = resultList + result
+
+            else:
+                resultList = list(set(resultList) - (set(resultList) - set(result)))
+
 
 
         # Search for all Price Queries
