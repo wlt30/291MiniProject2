@@ -125,6 +125,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     elif operator == '<=':
 
         while dateCursor.get(date, db.DB_CURRENT)[0] == date:
+            print("equals")
 
             # get the values of the keys and append to list of values
             retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
@@ -168,9 +169,10 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
 
 
-        dateCursor.get(date, db.DB_PREV)  # need to got to previous index due to how the set_range function works
+        # dateCursor.get(date, db.DB_PREV)  # need to got to previous index due to how the set_range function works
 
         while dateCursor.get(date, db.DB_CURRENT)[0] < date:
+            print("Less Than")
 
             # get the values of the keys and append to list of values
             retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
