@@ -13,7 +13,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     date = re.split('<=|>=|>|<|=', queryString)[1]
     #print(len(date))
     # extract the boolean operator from the query string
-    operator = re.findall('(?:<=|>=|>|<)', queryString)[0]
+    operator = re.findall('(?:<=|>=|>|<|=)', queryString)[0]
     date = bytes(date, encoding='utf-8')
 
     # initialize date index DB and ad index DB
