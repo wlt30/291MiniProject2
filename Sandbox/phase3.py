@@ -123,8 +123,8 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
 
     elif operator == '<=':
-        if dateCursor.get(date, db.DB_CURRENT)[0] != date:  # need to got to previous index due to how the set_range function works
-            dateCursor.prev()                                  # set to previous if set key is initially larger than date
+        # if dateCursor.get(date, db.DB_CURRENT)[0] != date:  # need to got to previous index due to how the set_range function works
+        #     dateCursor.prev()                                  # set to previous if set key is initially larger than date
 
         while dateCursor.get(date, db.DB_CURRENT)[0] <= date:
 
