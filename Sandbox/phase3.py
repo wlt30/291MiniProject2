@@ -223,9 +223,9 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     elif operator == '=':
         print("equals")  # need to got to previous index due to how the set_range function works
 
-        # test = dateCursor.get(date, db.DB_CURRENT)[1]
-        # test = test.decode('utf-8')  # adId is in first position
-        # print(test)
+        test = dateCursor.get(date, db.DB_CURRENT)[1]
+        test = test.decode('utf-8')  # adId is in first position
+        print(test)
 
         while dateCursor.get(date, db.DB_CURRENT)[1] == date:
             print("yes")
