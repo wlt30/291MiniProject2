@@ -255,11 +255,11 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                     # if we reach this point we can append the adID
                     adIds.append(retrievedValue.split(',')[0])
 
-            else:  # if there are no categories or locations to check then add the adID to the list
-                adIds.append(retrievedValue.split(',')[0])
+                else:  # if there are no categories or locations to check then add the adID to the list
+                    adIds.append(retrievedValue.split(',')[0])
 
-            if dateCursor.get(date, db.DB_NEXT) == None:
-                break
+                if dateCursor.get(date, db.DB_NEXT) == None:
+                    break
 
     # Now that we have the adIds we can get their titles from ad.idx
     fullRecords = []
