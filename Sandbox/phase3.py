@@ -10,7 +10,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     queryString = queryString.lower()
 
     # Extract the number from the date string
-    date = re.split('<=|>=|>|<', queryString)[1]
+    date = re.split('<=|>=|>|<|=', queryString)[1]
     #print(len(date))
     # extract the boolean operator from the query string
     operator = re.findall('(?:<=|>=|>|<)', queryString)[0]
