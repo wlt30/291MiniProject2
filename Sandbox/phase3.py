@@ -827,7 +827,7 @@ def phase3():
             userInput = userInput.replace(date, "")
             date = date.replace(" ","")
             result = dateQuery(date, categoryList, locationList)
-            resultList = resultList
+
 
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
