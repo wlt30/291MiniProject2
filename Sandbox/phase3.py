@@ -874,7 +874,7 @@ def phase3():
         # if the category query was not handled by price or date query then we execute the worst possible scenario
         if not dateList and not priceList:
             if categoryList:
-                category = categoryList[0].replace(" ", "")
+
                 result = categoryQuery(categoryList[0])
                 if not resultList:
                     resultList = resultList + result
