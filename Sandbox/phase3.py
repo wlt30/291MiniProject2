@@ -859,7 +859,7 @@ def phase3():
         # since all the other query strings will have been removed from the userInput string
         termList = re.findall(r'\s*[\w_-]+%?\s*', userInput)
         termList = list(filter(None, termList))
-        print(termList)
+
         for term in termList:
             term = term.replace(" ", "")
             result = termQuery(term)
@@ -876,6 +876,7 @@ def phase3():
             if categoryList:
 
                 result = categoryQuery(categoryList[0])
+                categoryResults = result
                 if not resultList:
                     resultList = resultList + result
 
@@ -885,11 +886,13 @@ def phase3():
             if locationList:
                 location = locationList[0].replace(" ", "")
                 result = locationQuery(location)
-                if not resultList:
+                if not resultList and not categoryList:
                     resultList = resultList + result;
 
                 else: # if the category query returned results we need to take the intersection
-                    resultList = list(set(resultList)- (set(resultList) - set(result)))
+                    if categoryList:
+                        result = list(set(result) - (set(result) - set(categoryResults)))
+                        resultList = list(set(resultList)- (set(resultList) - set(result)))
 
         if not resultList:
             print("No matches found")
