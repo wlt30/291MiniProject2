@@ -704,7 +704,7 @@ def termQuery(queryString):
 
         except:
             print("No term found")  # checks to see if term was found
-            exit()
+            return []
 
         while termCursor.get(queryString, db.DB_CURRENT)[0].decode('utf-8')[:stringLength] == queryString.decode('utf-8'):
 
@@ -722,7 +722,7 @@ def termQuery(queryString):
             termCursor.get(queryString, db.DB_CURRENT)
         except:
             print("No term found") # checks to see if term was found
-            exit()
+            return []
 
         # At this point the cursor is set correctly and we need to iterate through
         while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
@@ -821,7 +821,7 @@ def phase3():
             # resultList = resultList + result
 
         # Search for all dateQueries
-        dateList = re.findall(r'.*date\s*(?:<=|>=|>|<|=)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]', userInput)
+        dateList = re.findall(r'\s*date\s*(?:<=|>=|>|<|=)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]\s', userInput)
         for date in dateList:
             # first remove the date string from the userinput
             userInput = userInput.replace(date, "")
@@ -857,7 +857,7 @@ def phase3():
 
         # Once we get to this points, all thats left are the terms that the user wants to search for
         # since all the other query strings will have been removed from the userInput string
-        termList = re.findall(r'\s*\w+%?\s*', userInput)
+        termList = re.findall(r'\s*[\w-_]+%?\s*', userInput)
         termList = list(filter(None, termList))
         print(termList)
         for term in termList:
@@ -874,8 +874,13 @@ def phase3():
         # if the category query was not handled by price or date query then we execute the worst possible scenario
         if not dateList and not priceList:
             if categoryList:
+                category = categoryList[0].replace(" ", "")
                 result = categoryQuery(categoryList[0])
-                resultList = resultList + result;
+                if not resultList:
+                    resultList = resultList + result
+
+                else:
+                    resultList = list(set(resultList) - (set(resultList) - set(result)))
 
             if locationList:
                 location = locationList[0].replace(" ", "")
