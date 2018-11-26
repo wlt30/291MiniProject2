@@ -80,7 +80,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     # print(test)
 
     elif operator == '>':
-        test = dateCursor.get(date, db.DB_CURRENT)[0]) > date
+        test = dateCursor.get(date, db.DB_CURRENT)[0] > date
         test  = test.decode('utf-8')
         print(test)
 
