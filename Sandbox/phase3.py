@@ -82,6 +82,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             print("OK")
             # if the set index is exactly the price specified then move to next one if possible
             if dateCursor.get(date, db.DB_NEXT) == None:
+                print("None")
                 return []
 #-----------------------------
             else:
