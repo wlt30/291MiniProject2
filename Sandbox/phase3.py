@@ -10,10 +10,10 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     queryString = queryString.lower()
 
     # Extract the number from the date string
-    date = re.split('<=|>=|>|<', queryString)[1]
+    date = re.split('<=|>=|>|<|=', queryString)[1]
     #print(len(date))
     # extract the boolean operator from the query string
-    operator = re.findall('(?:<=|>=|>|<)', queryString)[0]
+    operator = re.findall('(?:<=|>=|>|<|=)', queryString)[0]
     date = bytes(date, encoding='utf-8')
 
     # initialize date index DB and ad index DB
@@ -26,12 +26,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
     dateCursor.set_range(date) # will set to the smallest key greater than or equal to the specified key
 
-
-    try:
-        dateCursor.get(date, db.DB_CURRENT)
-    except:
-        print("No Record with Specified Date Range Found")  # checks to see if term was found
-        exit()
+    #Removed try & accept to account for dates < a date that doesn't exist
 
     adIds = []
 
@@ -78,7 +73,6 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
             if dateCursor.get(date, db.DB_NEXT) == None:
                 break
-
 
     elif operator == '>':
 
@@ -214,6 +208,47 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                 adIds.append(retrievedValue.split(',')[0])
 
             if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
+                break
+
+    if operator == '=':
+        while dateCursor.get(date, db.DB_CURRENT)[0] == date:
+
+            # get the values of the keys and append to list of values
+            retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
+            retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
+
+            # determine if we need to meet location or category conditions
+            if categoryQueries or locationQueries:
+                if categoryQueries:
+                    category = categoryQueries[0]
+                    # get the category (there should only be one category)
+                    category = category.replace(" ", "")  # get rid of white space so we can split it
+                    catTerm = category.split("=")[1]
+
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+                    if catTerm != retrievedValue.split(",")[1].lower():
+                        if dateCursor.get(date, db.DB_NEXT) == None:
+                            break  # no match so we need to continue
+                        continue
+
+                if locationQueries:
+                    location = locationQueries[0]
+                    # get the category
+                    location = location.replace(" ", "")  # get rid of white space so we can split it
+                    locTerm = location.split("=")[1]
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+
+                    if locTerm != retrievedValue.split(",")[2].lower():
+                        if dateCursor.get(date, db.DB_NEXT) == None:
+                            break  # no match so we need to continue
+                        continue
+                # if we reach this point we can append the adID
+                adIds.append(retrievedValue.split(',')[0])
+
+            else:  # if there are no categories or locations to check then add the adID to the list
+                adIds.append(retrievedValue.split(',')[0])
+
+            if dateCursor.get(date, db.DB_NEXT) == None:
                 break
 
 
@@ -689,7 +724,7 @@ def phase3():
             # resultList = resultList + result
 
         # Search for all dateQueries
-        dateList = re.findall(r'.*date\s*(?:<=|>=|>|<)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]', userInput)
+        dateList = re.findall(r'.*date\s*(?:<=|>=|>|<|=)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]', userInput)
         for date in dateList:
             # first remove the date string from the userinput
             userInput = userInput.replace(date, "")
