@@ -1,5 +1,4 @@
 import re
-import time
 from bsddb3 import db
 
 # global variable to determine if user wants to display the short form or not
@@ -124,11 +123,20 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
 
     elif operator == '<=':
+
         if dateCursor.get(date, db.DB_CURRENT)[0] != date:  # need to got to previous index due to how the set_range function works
             dateCursor.prev()                                  # set to previous if set key is initially larger than date
 
-        while dateCursor.get(date, db.DB_CURRENT)[0] <= date:
+        while True:
+            dateCursor.next()
+            if dateCuror.get(date,db.DB_CURRENT)[0] == date:
+                continue
+            else:
+                dateCursor.prev()
+                break;
 
+        while dateCursor.get(date, db.DB_CURRENT)[0] <= date:
+            #..
             # get the values of the keys and append to list of values
             retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
             retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
@@ -304,7 +312,7 @@ def priceQuery(queryString, categoryQueries, locationQueries):
         priceCursor.get(price, db.DB_CURRENT)
     except:
         print("No Record with Specified Price Range Found")  # checks to see if term was found
-        return
+        exit()
 
     adIds = []
 
@@ -657,7 +665,7 @@ def termQuery(queryString):
 
         except:
             print("No term found")  # checks to see if term was found
-            return
+            exit()
 
         while termCursor.get(queryString, db.DB_CURRENT)[0].decode('utf-8')[:stringLength] == queryString.decode('utf-8'):
 
@@ -675,7 +683,7 @@ def termQuery(queryString):
             termCursor.get(queryString, db.DB_CURRENT)
         except:
             print("No term found") # checks to see if term was found
-            return
+            exit()
 
         # At this point the cursor is set correctly and we need to iterate through
         while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
@@ -724,8 +732,6 @@ def phase3():
         userInput = userInput.lower()
 
         if userInput == "exit":
-            print("Exiting...")
-            time.sleep(1)
             exit(1)
 
         elif userInput == "output=brief":
@@ -787,8 +793,7 @@ def phase3():
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
             if not resultList:
-                if result != None:
-                    resultList = resultList + result
+                resultList = resultList + result
 
             else:
                 resultList = list(set(resultList) - (set(resultList) - set(result)))
@@ -805,8 +810,7 @@ def phase3():
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
             if not resultList:
-                if result != None:
-                    resultList = resultList + result
+                resultList = resultList + result
 
             else:
                 resultList = list(set(resultList) - (set(resultList) - set(result)))
@@ -823,8 +827,8 @@ def phase3():
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
             if not resultList:
-                if result!=None:
-                    resultList = resultList + result
+                resultList = resultList + result
+
             else:
                 resultList = list(set(resultList) - (set(resultList) - set(result)))
 
@@ -838,8 +842,7 @@ def phase3():
                 location = locationList[0].replace(" ", "")
                 result = locationQuery(location)
                 if not resultList:
-                    if result != None:
-                        resultList = resultList + result;
+                    resultList = resultList + result;
 
                 else: # if the category query returned results we need to take the intersection
                     resultList = list(set(resultList)- (set(resultList) - set(result)))
