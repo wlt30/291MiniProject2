@@ -50,6 +50,7 @@ def main():
         sys.exit()
 
     print("Entering Phase 3")
+    exiting = False
     while(1):
         phase3.phase3()
 main()
