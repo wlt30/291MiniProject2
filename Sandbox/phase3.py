@@ -262,7 +262,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
             if dateCursor.get(date, db.DB_NEXT) == None:
                 break
-                
+
     # Now that we have the adIds we can get their titles from ad.idx
     fullRecords = []
     adIds = list(set(adIds)) # get rid of duplicates
