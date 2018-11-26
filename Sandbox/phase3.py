@@ -100,7 +100,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                 print(test)
             print("Loop #%s",i)
             iter = dateCursor.next()
-            i++
+            i+=1
 
 
         # if dateCursor.get(date, db.DB_CURRENT)[0] == date:
@@ -154,7 +154,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
 
 
-        
+
 
         # while dateCursor.get(date, db.DB_CURRENT)[0]) > date:
         #     print("test")
