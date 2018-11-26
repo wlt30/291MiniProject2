@@ -90,7 +90,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     #             return []
 
     elif operator == '>':
-        dateCursor.get(date, db.DB_PREV)  # need to got to previous index due to how the set_range function works
+        #dateCursor.get(date, db.DB_PREV)  # need to got to previous index due to how the set_range function works
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
 
