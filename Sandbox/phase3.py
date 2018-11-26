@@ -80,7 +80,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     # print(test)
 
     elif operator == '>':
-        if dateCursor.get(date, db.DB_CURRENT)[0] > date:
+        ok = dateCursor.get(date, db.DB_CURRENT)[0]) > date:
             print("There is an item greater than")
 
         if dateCursor.get(date, db.DB_CURRENT)[0] == date:
