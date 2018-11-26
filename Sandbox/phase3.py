@@ -821,7 +821,7 @@ def phase3():
             # resultList = resultList + result
 
         # Search for all dateQueries
-        dateList = re.findall(r'\s*date\s*(?:<=|>=|>|<|=)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]\s', userInput)
+        dateList = re.findall(r'\s*date\s*(?:<=|>=|>|<|=)\s*[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]\s*', userInput)
         for date in dateList:
             # first remove the date string from the userinput
             userInput = userInput.replace(date, "")
