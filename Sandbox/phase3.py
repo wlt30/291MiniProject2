@@ -100,8 +100,6 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                 print(test)
             print("Loop #%s",i)
             iter = dateCursor.next()
-            i+=1
-        if cur
 
 
         # if dateCursor.get(date, db.DB_CURRENT)[0] == date:
