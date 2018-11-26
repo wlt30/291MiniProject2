@@ -225,25 +225,25 @@ def dateQuery(queryString, categoryQueries, locationQueries):
         iter = dateCursor.first()
 
 
-        while iter:
-            # Iterate through all records and find the records where the location matches
-            returnedValue = priceCursor.get(category, db.DB_CURRENT)[1].decode('utf-8')
-            returnedLocation = returnedValue.split(',')[1]
-            #print(category.decode('utf-8'))
-
-            if returnedLocation.lower() == category.decode('utf-8'):
-                adIds.append(returnedValue.split(',')[0])
-
-            iter = dateCursor.next()
-
         # while iter:
-        #     if iter[0] == date:
-        #         test = iter[1]
-        #         test = test.decode('utf-8')  # adId is in first position
-        #         print(test)
-        #     print("yes")
+        #     # Iterate through all records and find the records where the location matches
+        #     returnedValue = priceCursor.get(category, db.DB_CURRENT)[1].decode('utf-8')
+        #     returnedLocation = returnedValue.split(',')[1]
+        #     #print(category.decode('utf-8'))
         #
-        #     iter= dateCursor.next()
+        #     if returnedLocation.lower() == category.decode('utf-8'):
+        #         adIds.append(returnedValue.split(',')[0])
+        #
+        #     iter = dateCursor.next()
+
+        while iter:
+            if iter[0] == date:
+                test = iter[1]
+                test = test.decode('utf-8')  # adId is in first position
+                print(test)
+            print("yes")
+
+            iter= dateCursor.next()
         #
         #     # get the values of the keys and append to list of values
         #     retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
