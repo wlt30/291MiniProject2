@@ -74,11 +74,6 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             if dateCursor.get(date, db.DB_NEXT) == None:
                 break
 
-#printing test
-    # test = dateCursor.get(date, db.DB_CURRENT)[1]
-    # test = test.decode('utf-8')
-    # print(test)
-
     elif operator == '>':
 
         if dateCursor.get(date, db.DB_CURRENT)[0] == date:
