@@ -87,7 +87,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                 return []
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
-            print("test")
+
             # get the values of the keys and append to list of values
             retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
             retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
