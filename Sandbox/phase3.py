@@ -27,11 +27,11 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     dateCursor.set_range(date) # will set to the smallest key greater than or equal to the specified key
 
 
-    try:
-        dateCursor.get(date, db.DB_CURRENT)
-    except:
-        print("No Record with Specified Date Range Found")  # checks to see if term was found
-        exit()
+    # try:
+    #     dateCursor.get(date, db.DB_CURRENT)
+    # except:
+    #     print("No Record with Specified Date Range Found")  # checks to see if term was found
+    #     exit()
 
     adIds = []
 
