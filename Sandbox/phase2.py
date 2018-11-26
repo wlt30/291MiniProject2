@@ -5,11 +5,13 @@ import time
 from subprocess import call
 
 def phase2():
-    
+
     os.system('touch splitTerms.txt')
     os.system('touch splitAds.txt')
     os.system('touch splitPdates.txt')
     os.system('touch splitPrices.txt')
+
+    os.system('rm -rf ad.idx da.idx te.idx pr.idx')
 
     splitTerms = open('splitTerms.txt', 'w')
     splitAds = open('splitAds.txt', 'w')
