@@ -108,7 +108,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
                     # Now check if the retrieved value has a corresponding category value as catTerm
                     if catTerm != retrievedValue.split(",")[1].lower():
-                        if dateCursor.get(date, db.DB_PREV) == None:
+                        if dateCursor.get(date, db.DB_NEXT) == None:
                             break  # no match so we need to continue
                         continue
 
@@ -120,7 +120,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                     # Now check if the retrieved value has a corresponding category value as catTerm
 
                     if locTerm != retrievedValue.split(",")[2].lower():
-                        if dateCursor.get(date, db.DB_PREV) == None:
+                        if dateCursor.get(date, db.DB_NEXT) == None:
                             break  # no match so we need to continue
                         continue
 
@@ -130,7 +130,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             else:  # if there are no categories or locations then add the adID to the list
                 adIds.append(retrievedValue.split(',')[0])
 
-            if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
+            if dateCursor.get(date, db.DB_NEXT) == None: # have to go backwards until beginning is reached
                 break
 
         # while dateCursor.get(date, db.DB_CURRENT)[0]) > date:
