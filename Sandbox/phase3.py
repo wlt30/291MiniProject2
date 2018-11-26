@@ -76,6 +76,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
 
     elif operator == '>':
+        print("greater than")
 
         # if dateCursor.get(date, db.DB_CURRENT)[0] == date:
         #     print("OK")
