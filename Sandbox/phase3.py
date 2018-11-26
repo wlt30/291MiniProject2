@@ -101,6 +101,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             print("Loop #%s",i)
             iter = dateCursor.next()
             i+=1
+        if cur
 
 
         # if dateCursor.get(date, db.DB_CURRENT)[0] == date:
@@ -289,24 +290,12 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
             if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
                 break
-    elif operator == '=':
-        print("equals")  # need to got to previous index due to how the set_range function works
-        iter = dateCursor.first()
 
+        if operator == '=':
+            while dateCursor.get(date, db.DB_CURRENT)[0] == date:
 
-        #
-        # while iter:
-        #     if iter[0] == date:
-        #         test = iter[1]
-        #         test = test.decode('utf-8')  # adId is in first position
-        #         print(test)
-        #     print("yes")
-        #
-        #     iter= dateCursor.next()
-        while iter:
-            if iter[0] ==date:
                 # get the values of the keys and append to list of values
-                retrievedValue = iter[1]
+                retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
                 retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
 
                 # determine if we need to meet location or category conditions
@@ -319,7 +308,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
                         # Now check if the retrieved value has a corresponding category value as catTerm
                         if catTerm != retrievedValue.split(",")[1].lower():
-                            if dateCursor.get(date, db.DB_PREV) == None:
+                            if dateCursor.get(date, db.DB_NEXT) == None:
                                 break  # no match so we need to continue
                             continue
 
@@ -331,20 +320,17 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                         # Now check if the retrieved value has a corresponding category value as catTerm
 
                         if locTerm != retrievedValue.split(",")[2].lower():
-                            if dateCursor.get(date, db.DB_PREV) == None:
+                            if dateCursor.get(date, db.DB_NEXT) == None:
                                 break  # no match so we need to continue
                             continue
-
                     # if we reach this point we can append the adID
                     adIds.append(retrievedValue.split(',')[0])
 
-                else:  # if there are no categories or locations then add the adID to the list
+                else:  # if there are no categories or locations to check then add the adID to the list
                     adIds.append(retrievedValue.split(',')[0])
 
-                if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
+                if dateCursor.get(date, db.DB_NEXT) == None:
                     break
-            iter= dateCursor.next()
-
 
 
     # Now that we have the adIds we can get their titles from ad.idx
