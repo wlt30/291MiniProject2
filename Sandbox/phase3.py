@@ -76,10 +76,21 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
     elif operator == '>':
 
-        if dateCursor.get(date, db.DB_CURRENT)[0] == date:
-            # if the set index is exactly the date specified then move to next one if possible
-            if dateCursor.get(date, db.DB_NEXT) == None:
-                return []
+
+        while True:
+            if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+                test = dateCursor.get(date, db.DB_CURRENT)[0]
+                # if the set index is exactly the date specified then move to next one if possible
+                if dateCursor.get(date, db.DB_NEXT) == None:
+                    return []
+
+                if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+                    continue
+
+                if dateCursor.get(date,db.DB_CURRENT)[0] > date:
+                    break
+            else:
+                break
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
 
@@ -364,10 +375,21 @@ def priceQuery(queryString, categoryQueries, locationQueries):
 
     elif operator == '>':
 
-        if priceCursor.get(price, db.DB_CURRENT)[0] == price:
-            # if the set index is exactly the price specified then move to next one if possible
-            if priceCursor.get(price, db.DB_NEXT) == None:
-                return []
+
+        while True:
+            if priceCursor.get(price, db.DB_CURRENT)[0] == price:
+                test = priceCursor.get(date, db.DB_CURRENT)[0]
+                # if the set index is exactly the date specified then move to next one if possible
+                if priceCursor.get(price, db.DB_NEXT) == None:
+                    return []
+
+                if priceCursor.get(price, db.DB_CURRENT)[0] == price:
+                    continue
+
+                if priceCursor.get(price,db.DB_CURRENT)[0] > price:
+                    break
+            else:
+                break
 
         while priceCursor.get(price, db.DB_CURRENT)[0] > price:
 
@@ -410,8 +432,21 @@ def priceQuery(queryString, categoryQueries, locationQueries):
                 break
 
     elif operator == '<=':
+
         if priceCursor.get(price, db.DB_CURRENT)[0] != price:  # need to got to previous index due to how the set_range function works
-            priceCursor.prev()                                  # set to previous if set key is initially larger than price
+            priceCursor.prev()                                  # set to previous if set key is initially larger than date
+
+        while True:
+
+
+            if priceCursor.get(price, db.DB_NEXT) == None:
+                break
+
+            if priceCursor.get(price,db.DB_CURRENT)[0] == price:
+                continue
+            else:
+                priceCursor.prev()
+                break
 
         while priceCursor.get(price, db.DB_CURRENT)[0] <= price:
 
