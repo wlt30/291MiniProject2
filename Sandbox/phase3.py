@@ -613,7 +613,7 @@ def locationQuery(queryString):
         # Iterate through all records and find the records where the location matches
         returnedValue = priceCursor.get(location, db.DB_CURRENT)[1].decode('utf-8')
         returnedLocation = returnedValue.split(',')[2]
-        print(location.decode('utf-8'))
+
 
         if returnedLocation.lower() == location.decode('utf-8'):
             adIds.append(returnedValue.split(',')[0])
