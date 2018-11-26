@@ -128,9 +128,10 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             dateCursor.prev()                                  # set to previous if set key is initially larger than date
 
         while True:
-            if dateCursor.next() == db.DB_NOTFOUND:
+
+            if dateCursor.get(date, db.DB_NEXT)[0] == db.DB_NOTFOUND:
                 break
-    
+
             if dateCursor.get(date,db.DB_CURRENT)[0] == date:
                 continue
             else:
