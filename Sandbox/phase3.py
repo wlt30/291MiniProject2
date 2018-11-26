@@ -76,13 +76,20 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                 break
 
     elif operator == '>':
-        ##
-        # if dateCursor.get(date, db.DB_CURRENT)[0] == date:
-        #     # if the set index is exactly the date specified then move to next one if possible
-        #     if dateCursor.get(date, db.DB_NEXT) == None:
-        #         return []
 
-        dateCursor.get(date, db.DB_FIRST)
+
+        while True:
+            if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+                # if the set index is exactly the date specified then move to next one if possible
+                if dateCursor.get(date, db.DB_NEXT) == None:
+                    return []
+
+                if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+                    continue
+                if dateCursor.get(date,db.DB_CURRENT)[0] >date:
+                    break
+
+
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
 
