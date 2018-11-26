@@ -77,10 +77,10 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
     elif operator == '>':
 
-        if dateCursor.get(date, db.DB_CURRENT)[0] == date:
-            # if the set index is exactly the price specified then move to next one if possible
-            if dateCursor.get(date, db.DB_NEXT) == None:
-                return []
+        # if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+        #     # if the set index is exactly the price specified then move to next one if possible
+        #     if dateCursor.get(date, db.DB_NEXT) == None:
+        #         return []
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
 
