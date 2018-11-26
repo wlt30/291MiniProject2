@@ -857,7 +857,7 @@ def phase3():
 
         # Once we get to this points, all thats left are the terms that the user wants to search for
         # since all the other query strings will have been removed from the userInput string
-        termList = re.findall(r'\s*[\w-_]+%?\s*', userInput)
+        termList = re.findall(r'\s*[\w_-]+%?\s*', userInput)
         termList = list(filter(None, termList))
         print(termList)
         for term in termList:
