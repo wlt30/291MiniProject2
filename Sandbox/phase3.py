@@ -1,4 +1,5 @@
 import re
+import time
 from bsddb3 import db
 
 # global variable to determine if user wants to display the short form or not
@@ -297,7 +298,7 @@ def priceQuery(queryString, categoryQueries, locationQueries):
         priceCursor.get(price, db.DB_CURRENT)
     except:
         print("No Record with Specified Price Range Found")  # checks to see if term was found
-        exit()
+        return
 
     adIds = []
 
@@ -607,7 +608,7 @@ def termQuery(queryString):
 
         except:
             print("No term found")  # checks to see if term was found
-            exit()
+            return
 
         while termCursor.get(queryString, db.DB_CURRENT)[0].decode('utf-8')[:stringLength] == queryString.decode('utf-8'):
 
@@ -625,7 +626,7 @@ def termQuery(queryString):
             termCursor.get(queryString, db.DB_CURRENT)
         except:
             print("No term found") # checks to see if term was found
-            exit()
+            return
 
         # At this point the cursor is set correctly and we need to iterate through
         while termCursor.get(queryString, db.DB_CURRENT)[0] == queryString:
@@ -674,6 +675,8 @@ def phase3():
         userInput = userInput.lower()
 
         if userInput == "exit":
+            print("Exiting...")
+            time.sleep(1)
             exit(1)
 
         elif userInput == "output=brief":
@@ -735,7 +738,8 @@ def phase3():
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
             if not resultList:
-                resultList = resultList + result
+                if result != None:
+                    resultList = resultList + result
 
             else:
                 resultList = list(set(resultList) - (set(resultList) - set(result)))
@@ -752,7 +756,8 @@ def phase3():
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
             if not resultList:
-                resultList = resultList + result
+                if result != None:
+                    resultList = resultList + result
 
             else:
                 resultList = list(set(resultList) - (set(resultList) - set(result)))
@@ -769,8 +774,8 @@ def phase3():
             # If there are already results in the result list, then take the intersection. Otherwise the just the result
             # to the result list
             if not resultList:
-                resultList = resultList + result
-
+                if result!=None:
+                    resultList = resultList + result
             else:
                 resultList = list(set(resultList) - (set(resultList) - set(result)))
 
@@ -784,7 +789,8 @@ def phase3():
                 location = locationList[0].replace(" ", "")
                 result = locationQuery(location)
                 if not resultList:
-                    resultList = resultList + result;
+                    if result != None:
+                        resultList = resultList + result;
 
                 else: # if the category query returned results we need to take the intersection
                     resultList = list(set(resultList)- (set(resultList) - set(result)))
