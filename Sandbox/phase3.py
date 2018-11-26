@@ -4,11 +4,238 @@ from bsddb3 import db
 # global variable to determine if user wants to display the short form or not
 SHORT_INPUT = True # set to true by default
 
-def dateQuery(queryString):
+def dateQuery(queryString, categoryQueries, locationQueries):
     #query string is of the format date<=yyyy/mm/dd or with an equivalent operator
     #We need to split this string in order to conduct the query TODO
+    queryString = queryString.lower()
 
-    return 0
+    # Extract the number from the date string
+    date = re.split('<=|>=|>|<', queryString)[1]
+    #print(len(date))
+    # extract the boolean operator from the query string
+    operator = re.findall('(?:<=|>=|>|<)', queryString)[0]
+    date = bytes(date, encoding='utf-8')
+
+    # initialize date index DB and ad index DB
+    dateIndex = db.DB()
+    dateIndex.open("pr.idx")
+    dateCursor = dateIndex.cursor()
+    adIndex = db.DB()
+    adIndex.open("ad.idx")
+    adCursor = adIndex.cursor()
+
+
+    # initialize date index DB and ad index DB
+    date = db.DB()
+    date.open("pr.idx")
+    dateCursor = dateIndex.cursor()
+    adIndex = db.DB()
+    adIndex.open("ad.idx")
+    adCursor = adIndex.cursor()
+
+    dateCursor.set_range(date) # will set to the smallest key greater than or equal to the specified key
+
+    try:
+        dateCursor.get(date, db.DB_CURRENT)
+    except:
+        print("No Record with Specified Date Range Found")  # checks to see if term was found
+        exit()
+
+    adIds = []
+
+    if operator == '>=':
+
+        while dateCursor.get(date, db.DB_CURRENT)[0] >= date:
+
+            # get the values of the keys and append to list of values
+            retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
+            retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
+
+            # determine if we need to meet location or category conditions
+            if categoryQueries or locationQueries:
+                if categoryQueries:
+                    category = categoryQueries[0]
+                    # get the category (there should only be one category)
+                    category = category.replace(" ", "")  # get rid of white space so we can split it
+                    catTerm = category.split("=")[1]
+
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+                    if catTerm != retrievedValue.split(",")[1].lower():
+                        if dateCursor.get(date, db.DB_NEXT) == None:
+                            break  # no match so we need to continue
+                        continue
+
+                if locationQueries:
+                    location = locationQueries[0]
+                    # get the category
+                    location = location.replace(" ", "")  # get rid of white space so we can split it
+                    locTerm = location.split("=")[1]
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+
+                    if locTerm != retrievedValue.split(",")[2].lower():
+                        if dateCursor.get(date, db.DB_NEXT) == None:
+                            break  # no match so we need to continue
+                        continue
+                # if we reach this point we can append the adID
+                adIds.append(retrievedValue.split(',')[0])
+
+            else:  # if there are no categories or locations to check then add the adID to the list
+                adIds.append(retrievedValue.split(',')[0])
+
+            if dateCursor.get(date, db.DB_NEXT) == None:
+                break
+
+
+    elif operator == '>':
+
+        if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+            # if the set index is exactly the date specified then move to next one if possible
+            if dateCursor.get(date, db.DB_NEXT) == None:
+                return []
+
+        while dateCursor.get(date, db.DB_CURRENT)[0] > date:
+
+            # get the values of the keys and append to list of values
+            retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
+            retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
+
+            # determine if we need to meet location or category conditions
+            if categoryQueries or locationQueries:
+                if categoryQueries:
+                    category = categoryQueries[0]
+                    # get the category (there should only be one category)
+                    category = category.replace(" ", "")  # get rid of white space so we can split it
+                    catTerm = category.split("=")[1]
+
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+                    if catTerm != retrievedValue.split(",")[1].lower():
+                        if dateCursor.get(date, db.DB_NEXT) == None:
+                            break  # no match so we need to continue
+                        continue
+
+                if locationQueries:
+                    location = locationQueries[0]
+                    # get the category
+                    location = location.replace(" ", "")  # get rid of white space so we can split it
+                    locTerm = location.split("=")[1]
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+
+                    if locTerm != retrievedValue.split(",")[2].lower():
+                        if dateCursor.get(date, db.DB_NEXT) == None:
+                            break  # no match so we need to continue
+                        continue
+                # if we reach this point we can append the adID
+                adIds.append(retrievedValue.split(',')[0])
+
+            else:  # if there are no categories or locations to check then add the adID to the list
+                adIds.append(retrievedValue.split(',')[0])
+
+            if dateCursor.get(date, db.DB_NEXT) == None:
+                break
+
+
+    elif operator == '<=':
+        if dateCursor.get(date, db.DB_CURRENT)[0] != date:  # need to got to previous index due to how the set_range function works
+            dateCursor.prev()                                  # set to previous if set key is initially larger than date
+
+        while dateCursor.get(date, db.DB_CURRENT)[0] <= date:
+
+            # get the values of the keys and append to list of values
+            retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
+            retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
+
+            # determine if we need to meet location or category conditions
+            if categoryQueries or locationQueries:
+                if categoryQueries:
+                    category = categoryQueries[0]
+                    # get the category (there should only be one category)
+                    category = category.replace(" ", "")  # get rid of white space so we can split it
+                    catTerm = category.split("=")[1]
+
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+                    if catTerm != retrievedValue.split(",")[1].lower():
+                        if dateCursor.get(date, db.DB_PREV) == None:
+                            break  # no match so we need to continue
+                        continue
+
+                if locationQueries:
+                    location = locationQueries[0]
+                    # get the category
+                    location = location.replace(" ", "")  # get rid of white space so we can split it
+                    locTerm = location.split("=")[1]
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+
+                    if locTerm != retrievedValue.split(",")[2].lower():
+                        if dateCursor.get(date, db.DB_PREV) == None:
+                            break  # no match so we need to continue
+                        continue
+                # if we reach this point we can append the adID
+                adIds.append(retrievedValue.split(',')[0])
+
+            else:  # if there are no categories or locations then add the adID to the list
+                adIds.append(retrievedValue.split(',')[0])
+
+            if dateCursor.get(date, db.DB_PREV) == None:
+                break
+
+    elif operator == '<':
+        dateCursor.get(date, db.DB_PREV)  # need to got to previous index due to how the set_range function works
+
+        while dateCursor.get(date, db.DB_CURRENT)[0] < date:
+
+            # get the values of the keys and append to list of values
+            retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
+            retrievedValue = retrievedValue.decode('utf-8')  # adId is in first position
+
+            # determine if we need to meet location or category conditions
+            if categoryQueries or locationQueries:
+                if categoryQueries:
+                    category = categoryQueries[0]
+                    # get the category (there should only be one category)
+                    category = category.replace(" ", "")  # get rid of white space so we can split it
+                    catTerm = category.split("=")[1]
+
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+                    if catTerm != retrievedValue.split(",")[1].lower():
+                        if dateCursor.get(date, db.DB_PREV) == None:
+                            break  # no match so we need to continue
+                        continue
+
+                if locationQueries:
+                    location = locationQueries[0]
+                    # get the category
+                    location = location.replace(" ", "")  # get rid of white space so we can split it
+                    locTerm = location.split("=")[1]
+                    # Now check if the retrieved value has a corresponding category value as catTerm
+
+                    if locTerm != retrievedValue.split(",")[2].lower():
+                        if dateCursor.get(date, db.DB_PREV) == None:
+                            break  # no match so we need to continue
+                        continue
+
+                # if we reach this point we can append the adID
+                adIds.append(retrievedValue.split(',')[0])
+
+            else:  # if there are no categories or locations then add the adID to the list
+                adIds.append(retrievedValue.split(',')[0])
+
+            if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
+                break
+
+
+    # Now that we have the adIds we can get their titles from ad.idx
+    fullRecords = []
+    adIds = list(set(adIds)) # get rid of duplicates
+    for adId in adIds:
+        # we are guaranteed to find the ads in ad.idx
+        adId = bytes(adId, encoding='utf-8')
+        adCursor.set(adId)
+        record = adCursor.get(adId, db.DB_CURRENT)
+
+        # now that we have the record we can return the ID as well as the ad record
+        fullRecords.append((adId.decode('utf-8'), record[1].decode('utf-8')))
+
+    return fullRecords
 
 
 def priceQuery(queryString, categoryQueries, locationQueries):
