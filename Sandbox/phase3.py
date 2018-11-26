@@ -82,7 +82,7 @@ def dateQuery(queryString, categoryQueries, locationQueries):
         #     if dateCursor.get(date, db.DB_NEXT) == None:
         #         return []
 
-        dateCursor.get(date, db.DB_CURRENT)
+        dateCursor.get(date, db.DB_FIRST)
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
 
