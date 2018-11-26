@@ -221,9 +221,11 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
                 break
     elif operator == '=':
+        print("equals")
         dateCursor.get(date, db.DB_PREV)  # need to got to previous index due to how the set_range function works
 
         while dateCursor.get(date, db.DB_CURRENT)[0] == date:
+            print("yes")
 
             # get the values of the keys and append to list of values
             retrievedValue = dateCursor.get(date, db.DB_CURRENT)[1]
