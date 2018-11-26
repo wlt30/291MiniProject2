@@ -91,6 +91,8 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
                 if dateCursor.get(date,db.DB_CURRENT)[0] > date:
                     break
+            else:
+                break
 
 
 
