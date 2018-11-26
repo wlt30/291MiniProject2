@@ -76,7 +76,6 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
 
     elif operator == '>':
-        print("greater than")
 
         if dateCursor.get(date, db.DB_CURRENT)[0] == date:
             # if the set index is exactly the price specified then move to next one if possible
@@ -218,8 +217,12 @@ def dateQuery(queryString, categoryQueries, locationQueries):
                 break
 
     elif operator == '=':
-
+        print("equal to")
         while dateCursor.get(date, db.DB_CURRENT)[0]:
+            test = dateCursor.get(date, db.DB_CURRENT)[1]
+            test = test.decode('utf-8')
+            print(test)
+
             if dateCursor.get(date, db.DB_CURRENT)[0] == date:
                 print("Equal To")
 
