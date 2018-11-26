@@ -18,22 +18,14 @@ def dateQuery(queryString, categoryQueries, locationQueries):
 
     # initialize date index DB and ad index DB
     dateIndex = db.DB()
-    dateIndex.open("pr.idx")
-    dateCursor = dateIndex.cursor()
-    adIndex = db.DB()
-    adIndex.open("ad.idx")
-    adCursor = adIndex.cursor()
-
-
-    # initialize date index DB and ad index DB
-    date = db.DB()
-    date.open("pr.idx")
+    dateIndex.open("da.idx")
     dateCursor = dateIndex.cursor()
     adIndex = db.DB()
     adIndex.open("ad.idx")
     adCursor = adIndex.cursor()
 
     dateCursor.set_range(date) # will set to the smallest key greater than or equal to the specified key
+
 
     try:
         dateCursor.get(date, db.DB_CURRENT)
@@ -42,6 +34,8 @@ def dateQuery(queryString, categoryQueries, locationQueries):
         exit()
 
     adIds = []
+
+
 
     if operator == '>=':
 
