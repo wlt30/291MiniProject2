@@ -78,10 +78,15 @@ def dateQuery(queryString, categoryQueries, locationQueries):
     elif operator == '>':
 
         if dateCursor.get(date, db.DB_CURRENT)[0] == date:
+
+            #------------------------------------------------------------------------------------------
+            test = dateCursor.get(date, db.DB_CURRENT)[1]
+            test = test.decode('utf-8')
+            print(test)
             # if the set index is exactly the price specified then move to next one if possible
             if dateCursor.get(date, db.DB_NEXT) == None:
                 return []
-
+            #------------------------------------------------------------------------------------------
 
         while dateCursor.get(date, db.DB_CURRENT)[0] > date:
             print("test")
@@ -216,12 +221,14 @@ def dateQuery(queryString, categoryQueries, locationQueries):
             if dateCursor.get(date, db.DB_PREV) == None: # have to go backwards until beginning is reached
                 break
 
-    elif operator == '=':
+    if operator == '=':
         print("equal to")
         while dateCursor.get(date, db.DB_CURRENT)[0]:
+            #------------------------------------------------------------------------------------------
             test = dateCursor.get(date, db.DB_CURRENT)[1]
             test = test.decode('utf-8')
             print(test)
+            #------------------------------------------------------------------------------------------
 
             if dateCursor.get(date, db.DB_CURRENT)[0] == date:
                 print("Equal To")
